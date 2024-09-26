@@ -1,15 +1,26 @@
+import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-url = ""
+load_dotenv()
 
-engine = create_engine(url)
 
+# PostgreSQL database connection URL
+URL = os.getenv("URL")
+
+
+# Create the connection engine
+engine = create_engine(URL)
+
+
+# Configuring local session
 sessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     bind=engine
 )
 
-base = declarative_base()
+
+# Declarative base for models
+Base = declarative_base()
