@@ -15,7 +15,7 @@ engine = create_engine(URL)
 
 
 # Configuring local session
-sessionLocal = sessionmaker(
+SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     bind=engine
