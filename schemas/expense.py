@@ -32,7 +32,7 @@ class AddExpense(BaseModel):
     @field_validator("date")
     def validate_date_format(cls, value):
         try:
-            return datetime.strptime(value.strftime("%d-%m-%Y"), '%d-%m-%Y').date()
+            return datetime.strptime(value.strftime("%d-%m-%Y"), "%d-%m-%Y").date()
         except ValueError:
             raise ValueError("The date format should be 'DD-MM-YYYY'")
 
@@ -72,7 +72,7 @@ class UpdateExpense(BaseModel):
     @field_validator("date")
     def validate_date_format(cls, value):
         try:
-            return datetime.strptime(value.strftime("%d-%m-%Y"), '%d-%m-%Y').date()
+            return datetime.strptime(value.strftime("%d-%m-%Y"), "%d-%m-%Y").date()
         except ValueError:
             raise ValueError("The date format should be 'DD-MM-YYYY'")
 

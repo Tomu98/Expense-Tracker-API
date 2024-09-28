@@ -1,11 +1,13 @@
-from pydantic import BaseModel, Field, EmailStr
+import re
+from pydantic import BaseModel, Field, field_validator, EmailStr
+from pydantic_core import ValidationError
 
 class UserSignUp(BaseModel):
     username: str = Field(
         title="Username",
-        description="The username must be from 3 to 20 characters long and can contain letters, numbers and underscores.",
+        description="The username must be from 3 to 30 characters long and can contain letters, numbers and underscores.",
         min_length=3,
-        max_length=20
+        max_length=30
     )
     email: EmailStr = Field(
         title="Email",
@@ -14,14 +16,28 @@ class UserSignUp(BaseModel):
     )
     password: str = Field(
         title="Password",
-        description="The password must have at least 8 characters, include one uppercase letter, one number, and one special character.",
+        description="The password must have at least 8 characters.",
         min_length=8
     )
     confirm_password: str = Field(
         title="Confirm Password",
-        description="It must match the password.",
-        min_length=8
+        description="It must match the password."
     )
+
+    # Username format validator
+    @field_validator("username")
+    def validate_username(cls, value):
+        if not re.match(r'^\w+$', value):
+            raise ValueError('Username can only contain letters, numbers, and underscores.')
+        return value
+
+    # Matching password validator
+    @field_validator("confirm_password")
+    def passwords_match(cls, value, info: ValidationError):
+        password = info.data.get("password")
+        if password and value != password:
+            raise ValueError("Passwords do not match")
+        return value
 
 
 
@@ -36,5 +52,3 @@ class UserLogin(BaseModel):
         description="Your account's password.",
         min_length=8
     )
-
-# Falta agregar para validar que password coincida con confirm_password
