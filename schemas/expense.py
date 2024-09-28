@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+from datetime import datetime, date as DateType
 
 class AddExpense(BaseModel):
     user_id: int = Field(
@@ -22,10 +23,18 @@ class AddExpense(BaseModel):
         max_length=200,
         default=None
     )
-    date: str = Field(
+    date: DateType = Field(
         title="Date",
         description="Date on which the expense was incurred in 'DD-MM-YYYY' format."
     )
+
+    # Date format validator
+    @field_validator("date")
+    def validate_date_format(cls, value):
+        try:
+            return datetime.strptime(value.strftime("%d-%m-%Y"), "%d-%m-%Y").date()
+        except ValueError:
+            raise ValueError("The date format should be 'DD-MM-YYYY'")
 
 
 
@@ -53,11 +62,19 @@ class UpdateExpense(BaseModel):
         max_length=200,
         default=None
     )
-    date: str = Field(
+    date: DateType = Field(
         title="Date",
         description="The new date for the expense in 'DD-MM-YYYY' format.",
         default=None
     )
+
+    # Date format validator
+    @field_validator("date")
+    def validate_date_format(cls, value):
+        try:
+            return datetime.strptime(value.strftime("%d-%m-%Y"), "%d-%m-%Y").date()
+        except ValueError:
+            raise ValueError("The date format should be 'DD-MM-YYYY'")
 
 
 
@@ -66,5 +83,3 @@ class RemoveExpense(BaseModel):
         title="Expense ID",
         description="The expense ID to eliminate."
     )
-
-# Falta agregar y validar sobre DATE !!!!!!!
