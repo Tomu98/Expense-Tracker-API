@@ -16,21 +16,19 @@ if not SECRET_KEY:
     raise ValueError("SECRET_KEY environment variable is missing")
 
 
-
+# Create a JWT
 def create_jwt(data: dict, expires_delta: timedelta = timedelta(minutes=30)):
-    # Copy of the data dictionary
     to_encode = data.copy()
 
-    # Token expiration date
     expire = datetime.now(timezone.utc) + expires_delta
     to_encode.update({"exp": expire})
 
-    # Encrypt token with secret key and algorithm
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
 
+# Decode the JWT
 def decode_jwt(token: str):
     try:
         decoded_data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

@@ -7,7 +7,6 @@ from models.user import User
 
 
 router = APIRouter(
-    prefix="/auth",
     tags=["Authentication"]
 )
 
@@ -39,7 +38,7 @@ async def register(user: UserSignUp, db: db_dependency):
     db.commit()
     db.refresh(new_user)
 
-    return {"message": f"User '{new_user.username}' successfully registered"}
+    return {"detail": f"User '{new_user.username}' successfully registered"}
 
 
 
