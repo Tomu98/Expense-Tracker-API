@@ -75,11 +75,3 @@ class UpdateExpense(BaseModel):
             return datetime.strptime(value.strftime("%d-%m-%Y"), "%d-%m-%Y").date()
         except ValueError:
             raise ValueError("The date format should be 'DD-MM-YYYY'")
-
-
-
-class RemoveExpense(BaseModel):
-    id: int = Field(
-        title="Expense ID",
-        description="The expense ID to eliminate."
-    )
