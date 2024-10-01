@@ -1,12 +1,8 @@
 from pydantic import BaseModel, Field, field_validator
 from datetime import datetime, date as DateType
 
+
 class AddExpense(BaseModel):
-    user_id: int = Field(
-        title="User ID",
-        description="The user ID associated with this expense.",
-        gt=0
-    )
     amount: float = Field(
         title="Amount",
         description="The amount of money allocated to this expense.",
@@ -39,11 +35,6 @@ class AddExpense(BaseModel):
 
 
 class UpdateExpense(BaseModel):
-    id: int = Field(
-        title="Expense ID",
-        description="The expense ID to update.",
-        gt=0
-    )
     amount: float = Field(
         title="Amount",
         description="The new amount for the expense.",
