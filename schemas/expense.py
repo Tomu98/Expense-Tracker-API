@@ -2,6 +2,9 @@ from pydantic import BaseModel, Field, field_validator
 from datetime import datetime, date as DateType
 
 
+ALLOWED_CATEGORIES = ["Groceries", "Leisure", "Electronics", "Utilities", "Clothing", "Health", "Others"]
+
+
 class AddExpense(BaseModel):
     amount: float = Field(
         title="Amount",
@@ -10,7 +13,7 @@ class AddExpense(BaseModel):
     )
     category: str = Field(
         title="Category",
-        description="The category to which this expense belongs.",
+        description="The category to which this expense belongs. Can be one of the following: 'Groceries', 'Leisure', 'Electronics', 'Utilities', 'Clothing', 'Health', 'Others'.",
         max_length=50
     )
     description: str = Field(
@@ -21,16 +24,24 @@ class AddExpense(BaseModel):
     )
     date: DateType = Field(
         title="Date",
-        description="Date on which the expense was incurred in 'DD-MM-YYYY' format."
+        description="Date on which the expense was incurred in 'YYYY-MM-DD' format."
     )
 
     # Date format validator
     @field_validator("date")
     def validate_date_format(cls, value):
         try:
-            return datetime.strptime(value.strftime("%d-%m-%Y"), "%d-%m-%Y").date()
+            return datetime.strptime(value.strftime("%Y-%m-%d"), "%Y-%m-%d").date()
         except ValueError:
-            raise ValueError("The date format should be 'DD-MM-YYYY'")
+            raise ValueError("The date format should be 'YYYY-MM-DD'")
+
+    # Check category validator
+    @field_validator("category")
+    def check_category(cls, value):
+        value = value.title()
+        if value not in ALLOWED_CATEGORIES:
+            raise ValueError(F"Invalid category. Allowed categories are: {', '.join(ALLOWED_CATEGORIES)}")
+        return value
 
 
 
@@ -43,7 +54,7 @@ class UpdateExpense(BaseModel):
     )
     category: str = Field(
         title="Category",
-        description="The new category for the expense.",
+        description="The new category for the expense. Can be one of the following: 'Groceries', 'Leisure', 'Electronics', 'Utilities', 'Clothing', 'Health', 'Others'.",
         max_length=50,
         default=None
     )
@@ -55,7 +66,7 @@ class UpdateExpense(BaseModel):
     )
     date: DateType = Field(
         title="Date",
-        description="The new date for the expense in 'DD-MM-YYYY' format.",
+        description="The new date for the expense in 'YYYY-MM-DD' format.",
         default=None
     )
 
@@ -63,6 +74,17 @@ class UpdateExpense(BaseModel):
     @field_validator("date")
     def validate_date_format(cls, value):
         try:
-            return datetime.strptime(value.strftime("%d-%m-%Y"), "%d-%m-%Y").date()
+            return datetime.strptime(value.strftime("%Y-%m-%d"), "%Y-%m-%d").date()
         except ValueError:
-            raise ValueError("The date format should be 'DD-MM-YYYY'")
+            raise ValueError("The date format should be 'YYYY-MM-DD'")
+
+    # Check category validator
+    @field_validator("category")
+    def check_category(cls, value):
+        if value is None:
+            return value
+        
+        value = value.title()
+        if value not in ALLOWED_CATEGORIES:
+            raise ValueError(f"Invalid category. Allowed categories are: {', '.join(ALLOWED_CATEGORIES)}")
+        return value

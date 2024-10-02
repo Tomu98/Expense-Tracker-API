@@ -3,7 +3,7 @@ from routers import auth, expenses
 
 app = FastAPI(
     title="Expense Tracker API",
-    version="0.12.0"
+    version="0.14.0"
 )
 
 app.include_router(auth.router)
