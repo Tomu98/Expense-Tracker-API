@@ -52,3 +52,9 @@ class UserLogin(BaseModel):
         description="Your account's password.",
         min_length=8
     )
+
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
