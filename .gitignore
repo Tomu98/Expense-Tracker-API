@@ -1,4 +1,7 @@
 __pycache__/
 *.pyc
+
 .expvenv/
 .env
+
+alembic/script.py.mako
