@@ -1,16 +1,67 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from dependencies.auth import get_current_user
 from dependencies.database import db_dependency
+from models.user import User
+from schemas.user import UpdateAccount
 
 
-router = APIRouter()
+router = APIRouter(
+    tags=["User Account"]
+)
 
 
-# Actualizar perfil
-@router.put("/update", status_code=status.HTTP_201_CREATED)
-async def update_account(db: db_dependency):
-    pass
+# Update account
+@router.put("/update", status_code=status.HTTP_200_OK)
+async def update_account(user_data: UpdateAccount, db: db_dependency, current_user: User = Depends(get_current_user)):
+    """
+    Update the authenticated user's username.
 
-# Eliminar cuenta
+    Args:
+        user_data (UpdateAccount): Schema with the new username.
+        db (db_dependency): Database session.
+        current_user (User, optional): The currently authenticated user. Defaults to Depends(get_current_user).
+
+    Raises:
+        HTTPException: If the user is not found.
+        HTTPException: If the new username is already taken.
+
+    Returns:
+        dict: A message indicating the update was successful and the updated username.
+    """
+    user = db.query(User).filter(User.id == current_user.id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
+    
+    username_exists = db.query(User).filter(User.username == user_data.username).first()
+    if username_exists:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already in use.")
+
+    user.username = user_data.username
+
+    db.commit()
+    db.refresh(user)
+
+    return {"msg": "Username updated successfully", "username": user.username}
+
+
+
+# Delete account
 @router.delete("/delete", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_account(db: db_dependency):
-    pass
+async def delete_account(db: db_dependency, current_user: User = Depends(get_current_user)):
+    """
+    Delete the authenticated user's account.
+
+    Args:
+        db (db_dependency): Database session.
+        current_user (User, optional): The currently authenticated user. Defaults to Depends(get_current_user).
+
+    Raises:
+        HTTPException: If the user is not found.
+    """
+    user = db.query(User).filter(User.id == current_user.id).first()
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    db.delete(user)
+    db.commit()

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from datetime import datetime, date as DateType
+from datetime import date as DateType
 
 
 ALLOWED_CATEGORIES = ["Groceries", "Leisure", "Electronics", "Utilities", "Clothing", "Health", "Others"]
@@ -26,14 +26,6 @@ class AddExpense(BaseModel):
         title="Date",
         description="Date on which the expense was incurred in 'YYYY-MM-DD' format."
     )
-
-    # Date format validator
-    @field_validator("date")
-    def validate_date_format(cls, value):
-        try:
-            return datetime.strptime(value.strftime("%Y-%m-%d"), "%Y-%m-%d").date()
-        except ValueError:
-            raise ValueError("The date format should be 'YYYY-MM-DD'")
 
     # Check category validator
     @field_validator("category")
@@ -70,20 +62,12 @@ class UpdateExpense(BaseModel):
         default=None
     )
 
-    # Date format validator
-    @field_validator("date")
-    def validate_date_format(cls, value):
-        try:
-            return datetime.strptime(value.strftime("%Y-%m-%d"), "%Y-%m-%d").date()
-        except ValueError:
-            raise ValueError("The date format should be 'YYYY-MM-DD'")
-
     # Check category validator
     @field_validator("category")
     def check_category(cls, value):
         if value is None:
             return value
-        
+
         value = value.title()
         if value not in ALLOWED_CATEGORIES:
             raise ValueError(f"Invalid category. Allowed categories are: {', '.join(ALLOWED_CATEGORIES)}")
