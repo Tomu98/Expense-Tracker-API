@@ -1,7 +1,7 @@
 # Expense Tracker API
 
 Expense Tracker API is a backend application designed to allow users to manage their personal expenses.
-Users can register, log in, update their username or delete their account, and perform CRUD (Create, Read, Update and Delete) operations on their expenses.
+Users can register, log in, update their username or delete their account, and perform CRUD operations on their expenses.
 The API also features a filtering system to search for expenses by dates and categories.
 
 
