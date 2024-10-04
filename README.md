@@ -126,13 +126,3 @@ If you decide to change the database or authentication settings,
 be sure to adjust the environment variables in the `.env` file.
 
 
-<br>
-
-## License
-
-This project is licensed under [MIT License](https://opensource.org/licenses/MIT).
-
-
-
-
-
