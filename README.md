@@ -33,16 +33,6 @@ In advance, thanks for reading and visiting the project.
 
 <br>
 
-## Requirements
-
-- Python 3.9+
-- FastAPI
-- PostgreSQL (you can use any SQL database, but PostgreSQL is the one used in this project)
-- Pydantic v2
-- Other requirements mentioned in `requirements.txt`
-
-<br>
-
 ## Installation
 
 1. Clone this repository on your local machine:
