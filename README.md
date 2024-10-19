@@ -8,7 +8,7 @@ The API also features a filtering system to search for expenses by dates and cat
 This project is inspired by an idea from [roadmap.sh](https://roadmap.sh), a platform that offers community-created roadmaps, best practices, projects, and resources to help people grow in their technology careers.
 
 
-Specific inspiration for this project comes from the following link: [Expense Tracker API en roadmap.sh](https://roadmap.sh/projects/expense-tracker-api)
+Specific inspiration for this project comes from the following link: [Expense Tracker API in roadmap.sh](https://roadmap.sh/projects/expense-tracker-api)
 
 <br>
 
