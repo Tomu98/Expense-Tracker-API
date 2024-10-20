@@ -41,7 +41,7 @@ Specific inspiration for this project comes from the following link: [Expense Tr
    ```bash
    python -m venv .venv          # Create a virtual environment
    source .expvenv/bin/activate  # Activate the environment in Linux/MacOS
-   .expvenv\Scripts\activate     # Activate the environment in Windows
+   .venv\Scripts\activate     # Activate the environment in Windows
    ```
 
 4. Install the necessary dependencies for the project using the `requirements.txt` file:
