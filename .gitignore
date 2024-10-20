@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 
 .expvenv/
+.venv
 .env
 
 alembic/script.py.mako
