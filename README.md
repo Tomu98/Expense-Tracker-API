@@ -81,8 +81,8 @@ Adjust the `.env` file if you need to change the database or authentication sett
 
 ## How to use it
 
-Once the application is running, you can access Swagger's interactive documentation at 
-`http://localhost:8000/docs` where you can visualize and test the different API endpoints.
+Once the application is running, you can access Swagger's interactive API documentation at 
+`http://localhost:8000/docs`, where you can visualize and test the available API endpoints.
 
 ### Main Endpoints
 
