@@ -11,7 +11,6 @@ load_dotenv()
 # PostgreSQL database connection URL
 URL = os.getenv("DATABASE_URL")
 
-
 # Ensure the URL is available
 if not URL:
     raise ValueError("Database URL is missing. Please set the 'URL' environment variable.")

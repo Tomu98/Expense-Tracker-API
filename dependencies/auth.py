@@ -37,7 +37,7 @@ def authenticate_user(username: str, password: str, db: db_dependency):
         db (db_dependency): Database session dependency.
 
     Returns:
-        ser or bool: The authenticated user object if credentials are valid, False otherwise.
+        User or bool: The authenticated user object if credentials are valid, False otherwise.
     """
     user = db.query(User).filter(User.username == username).first()
 
