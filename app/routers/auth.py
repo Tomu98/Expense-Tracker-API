@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from dependencies.auth import authenticate_user, hash_password
-from dependencies.database import db_dependency
-from dependencies.jwt import create_jwt
-from models.user import User
-from schemas.user import UserSignUp, Token
+from app.dependencies.auth import authenticate_user, hash_password
+from app.dependencies.database import db_dependency
+from app.dependencies.jwt import create_jwt
+from app.models.user import User
+from app.schemas.user import UserSignUp, Token
 from datetime import timedelta
 
 
