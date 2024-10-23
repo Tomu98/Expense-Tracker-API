@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
-from dependencies.database import db_dependency
-from dependencies.jwt import decode_jwt
-from models.user import User
+from app.dependencies.database import db_dependency
+from app.dependencies.jwt import decode_jwt
+from app.models.user import User
 from passlib.context import CryptContext
 from typing import Annotated
 from jose import JWTError

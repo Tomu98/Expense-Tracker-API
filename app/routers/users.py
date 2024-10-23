@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from dependencies.auth import get_current_user
-from dependencies.database import db_dependency
-from models.user import User
-from schemas.user import UpdateAccount
+from app.dependencies.auth import get_current_user
+from app.dependencies.database import db_dependency
+from app.models.user import User
+from app.schemas.user import UpdateAccount
 
 
 router = APIRouter(

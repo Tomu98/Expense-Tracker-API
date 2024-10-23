@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Path
-from dependencies.auth import user_dependency
-from dependencies.database import db_dependency
-from models.expense import Expense
-from schemas.expense import AddExpense, UpdateExpense
+from app.dependencies.auth import user_dependency
+from app.dependencies.database import db_dependency
+from app.models.expense import Expense
+from app.schemas.expense import AddExpense, UpdateExpense
 from datetime import date, timedelta
 
 
