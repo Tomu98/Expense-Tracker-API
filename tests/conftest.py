@@ -29,7 +29,7 @@ Base.metadata.create_all(bind=engine)
 
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def db():
     """
     Creates a database session for the tests. It starts a transaction at the 
@@ -46,7 +46,7 @@ def db():
     connection.close()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def client(db):
     """
     Client to interact with the API during tests. Override the 
