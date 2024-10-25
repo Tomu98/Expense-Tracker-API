@@ -52,7 +52,7 @@ async def signup(user: UserSignUp, db: db_dependency):
 
 
 
-@router.post("/login", summary="User Login", response_model=Token,status_code=status.HTTP_200_OK)
+@router.post("/login", summary="User Login", response_model=Token, status_code=status.HTTP_200_OK)
 async def login(db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Authenticate a user and return a JWT token.

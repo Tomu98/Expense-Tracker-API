@@ -42,10 +42,11 @@ class UserSignUp(BaseModel):
 
 
 class UserLogin(BaseModel):
-    email: EmailStr = Field(
-        title="Email",
-        description="Must be a valid email address.",
-        max_length=75
+    username: str = Field(
+        title="Username",
+        description="Your account's username.",
+        min_length=3,
+        max_length=30
     )
     password: str = Field(
         title="Password",

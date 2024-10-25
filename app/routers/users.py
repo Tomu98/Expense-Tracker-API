@@ -33,15 +33,14 @@ async def update_account(user_data: UpdateAccount, db: db_dependency, current_us
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
     
     username_exists = db.query(User).filter(User.username == user_data.username).first()
-    if username_exists:
+    if username_exists and username_exists.id != current_user.id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already in use.")
 
     user.username = user_data.username
-
     db.commit()
     db.refresh(user)
 
-    return {"msg": "Username updated successfully", "username": user.username}
+    return {"msg": "Username updated successfully.", "username": user.username}
 
 
 
@@ -61,7 +60,7 @@ async def delete_account(db: db_dependency, current_user: User = Depends(get_cur
     user = db.query(User).filter(User.id == current_user.id).first()
 
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
 
     db.delete(user)
     db.commit()
