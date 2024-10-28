@@ -1,6 +1,6 @@
 from fastapi import status
 from app.models.user import User
-from tests.test_utils import create_user_for_test
+from tests.utils import create_user_for_test
 
 
 

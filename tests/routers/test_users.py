@@ -1,5 +1,5 @@
 from fastapi import status
-from tests.test_utils import create_user_for_test
+from tests.utils import create_user_for_test
 
 
 
