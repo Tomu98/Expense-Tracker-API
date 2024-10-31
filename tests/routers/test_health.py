@@ -4,9 +4,6 @@ from fastapi import status
 def test_return_health_check(client):
     """
     Test the health check endpoint to ensure the server is operational.
-
-    Args:
-        client: Test client for API requests.
     """
     response = client.get("/healthy")
     assert response.status_code == status.HTTP_200_OK

@@ -4,12 +4,9 @@ from tests.utils import create_user_for_test
 
 
 
-def test_signup_succes(client):
+def test_signup_success(client):
     """
     Test successful user signup.
-
-    Args:
-        client (TestClient):  The test client used to make HTTP requests.
     """
     response = create_user_for_test(client, "testuser", "test@example.com", "testpasdword")
     assert response.status_code == status.HTTP_201_CREATED
@@ -23,22 +20,13 @@ def test_signup_succes(client):
 def test_signup_email_exists(client, db):
     """
     Test handling of duplicate email during signup.
-
-    Args:
-        client (TestClient): The test client used to make HTTP requests.
-        db (Session): Database session for verifying user existence.
     """
-    response1 = create_user_for_test(client, "testuser", "duplicate@example.com", "testpassword")
-    assert response1.status_code == status.HTTP_201_CREATED  # First signup should succeed
+    create_user_for_test(client, "testuser1", "duplicate@example.com", "testpassword")
 
-    # Check if user is created in the database
-    user_in_db = db.query(User).filter(User.email == "duplicate@example.com").first()
-    assert user_in_db is not None
+    response = create_user_for_test(client, "testuser2", "duplicate@example.com", "testpassword2")
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    response2 = create_user_for_test(client, "testuser2", "duplicate@example.com", "testpassword2")
-    assert response2.status_code == status.HTTP_400_BAD_REQUEST  # Second signup should fail
-
-    response_data = response2.json()
+    response_data = response.json()
     assert "detail" in response_data
     assert response_data["detail"] == "Email already registered."
 
@@ -46,41 +34,24 @@ def test_signup_email_exists(client, db):
 def test_signup_username_taken(client, db):
     """
     Test handling of duplicate username during signup.
-
-    Args:
-        client (TestClient): The test client used to make HTTP requests.
-        db (Session): Database session for verifying user existence.
     """
-    response1 = create_user_for_test(client, "duplicateuser", "test@example.com", "testpassword")
-    assert response1.status_code == status.HTTP_201_CREATED  # First signup should succeed
+    create_user_for_test(client, "duplicateuser", "test@example.com", "testpassword")
 
-    # Check if user is created in the database
-    user_in_db = db.query(User).filter(User.username == "duplicateuser").first()
-    assert user_in_db is not None
+    response = create_user_for_test(client, "duplicateuser", "test2@example.com", "testpassword")
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    response2 = create_user_for_test(client, "duplicateuser", "test2@example.com", "testpassword")
-    assert response2.status_code == status.HTTP_400_BAD_REQUEST  # Second signup should fail
-
-    response_data = response2.json()
+    response_data = response.json()
     assert "detail" in response_data
     assert response_data["detail"] == "Username already taken."
 
 
 
-def test_login_succes(client):
+def test_login_success(client):
     """
     Test successful login of a user.
-
-    Ensures that a valid user can log in with correct credentials 
-    and receive a valid JWT access token in response.
-
-    Args:
-        client (TestClient): The test client used to make HTTP requests.
     """
-    response = create_user_for_test(client, "testuser", "test@example.com", "testpassword")
-    assert response.status_code == status.HTTP_201_CREATED
+    create_user_for_test(client, "testuser", "test@example.com", "testpassword")
 
-    # Attempt to log in with correct credentials
     login_data = {"username": "testuser", "password": "testpassword"}
     response = client.post("/login", data=login_data)
     assert response.status_code == status.HTTP_200_OK
@@ -91,38 +62,24 @@ def test_login_succes(client):
 def test_invalid_login(client):
     """
     Test login with invalid credentials.
-
-    Verifies that login fails and returns 401 Unauthorized 
-    when provided with an incorrect username or password.
-
-    Args:
-        client (TestClient): The test client used to make HTTP requests.
     """
-    response = create_user_for_test(client, "testuser", "test@example.com", "testpassword")
-    assert response.status_code == status.HTTP_201_CREATED
+    create_user_for_test(client, "testuser", "test@example.com", "testpassword")
 
-    # Login with an incorrect username
     invalid_username_data = {"username": "wronguser", "password": "testpassword"}
-    response = client.post("/login", data=invalid_username_data)
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.json()["detail"] == "Invalid credentials."
-
-    # Login with incorrect password
     invalid_password_data = {"username": "testuser", "password": "wrongpassword"}
-    response = client.post("/login", data=invalid_password_data)
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.json()["detail"] == "Invalid credentials."
+
+    response1 = client.post("/login", data=invalid_username_data)
+    response2 = client.post("/login", data=invalid_password_data)
+
+    assert response1.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response2.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response1.json()["detail"] == "Invalid credentials."
+    assert response2.json()["detail"] == "Invalid credentials."
 
 
 def test_missing_login_fields(client):
     """
     Test login with missing credentials.
-
-    Verifies that login fails with 422 Unprocessable Entity when 
-    the username or password is not provided in the request.
-
-    Args:
-        client (TestClient): The test client used to make HTTP requests.
     """
     # No username or password provided
     missing_login_data = {}
@@ -138,19 +95,15 @@ def test_missing_login_fields(client):
 def test_token_format(client):
     """
     Test the format of the JWT token returned after login.
-
-    Verifies that the token has the expected structure (three parts separated by dots).
-
-    Args:
-        client (TestClient): The test client used to make HTTP requests.
     """
-    response = create_user_for_test(client, "testuser", "test@example.com", "testpassword")
-    assert response.status_code == status.HTTP_201_CREATED
+    create_user_for_test(client, "testuser", "test@example.com", "testpassword")
 
     # Attempt to log in and get the token
     login_data = {"username": "testuser", "password": "testpassword"}
     response = client.post("/login", data=login_data)
+    assert response.status_code == status.HTTP_200_OK
 
     # Check that the token has the correct format (header.payload.signature)
     token = response.json().get("access_token")
+    assert token is not None
     assert len(token.split(".")) == 3

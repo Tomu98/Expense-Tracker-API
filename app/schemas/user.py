@@ -57,7 +57,12 @@ class UserLogin(BaseModel):
 
 
 class UpdateAccount(BaseModel):
-    username: str
+    username: str = Field(
+        title="Username",
+        description="The username must be from 3 to 30 characters long and can contain letters, numbers and underscores.",
+        min_length=3,
+        max_length=30
+    )
 
     # Username format validator
     @field_validator("username")
