@@ -9,7 +9,7 @@ def test_update_account_success(client):
     """
     create_user_for_test(client, "testuser", "test@example.com", "testpassword")
 
-    # Log in to get an access token
+    # Login to get an access token
     login_data = {"username": "testuser", "password": "testpassword"}
     response = client.post("/login", data=login_data)
     token = response.json().get("access_token")
@@ -54,7 +54,7 @@ def test_update_account_username_taken(client):
     create_user_for_test(client, "existinguser", "existing@example.com", "testpassword")
     create_user_for_test(client, "testuser", "test@example.com", "testpassword")
 
-    # Log in with the second user
+    # Login with the second user
     login_data = {"username": "testuser", "password": "testpassword"}
     response = client.post("/login", data=login_data)
     token = response.json().get("access_token")
@@ -72,7 +72,7 @@ def test_update_account_missing_fields(client):
     """
     create_user_for_test(client, "testuser", "test@example.com", "testpassword")
 
-    # Log in to get an access token
+    # Login to get an access token
     login_data = {"username": "testuser", "password": "testpassword"}
     response = client.post("/login", data=login_data)
     token = response.json().get("access_token")
@@ -84,17 +84,17 @@ def test_update_account_missing_fields(client):
 
 def test_update_account_invalid_username_format(client):
     """
-    Test that an error is returned if the new username does not meet format requirements.
+    Test that an error is returned if the new username doesn't meet format requirements.
     """
     create_user_for_test(client, "testuser", "test@example.com", "testpassword")
 
-    # Log in to get an access token
+    # Login to get an access token
     login_data = {"username": "testuser", "password": "testpassword"}
     response = client.post("/login", data=login_data)
     token = response.json().get("access_token")
 
     # Attempt to update to an invalid username (e.g., too short)
-    update_data = {"username": "x"}  # Assuming the username must be at least 3 characters
+    update_data = {"username": "x"}
     response = client.put("/update", json=update_data, headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
@@ -106,7 +106,7 @@ def test_delete_account_success(client):
     """
     create_user_for_test(client, "testuser", "test@example.com", "testpassword")
 
-    # Log in to get an access token
+    # Login to get an access token
     login_data = {"username": "testuser", "password": "testpassword"}
     response = client.post("/login", data=login_data)
     token = response.json().get("access_token")
@@ -128,6 +128,7 @@ def test_delete_account_user_not_found(client):
     """
     Test that verifies that an error is returned if the user doesn't exist when trying to delete the account.
     """
+    # Simulating an authenticated user
     with patch('app.dependencies.auth.get_current_user') as mock_get_current:
         mock_get_current.return_value = None
 

@@ -1,5 +1,4 @@
 from fastapi import status
-from app.models.user import User
 from tests.utils import create_user_for_test
 
 
@@ -17,7 +16,7 @@ def test_signup_success(client):
     assert response_data["detail"] == f"User 'testuser' successfully registered"
 
 
-def test_signup_email_exists(client, db):
+def test_signup_email_exists(client):
     """
     Test handling of duplicate email during signup.
     """
@@ -31,7 +30,7 @@ def test_signup_email_exists(client, db):
     assert response_data["detail"] == "Email already registered."
 
 
-def test_signup_username_taken(client, db):
+def test_signup_username_taken(client):
     """
     Test handling of duplicate username during signup.
     """
