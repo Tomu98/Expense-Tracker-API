@@ -6,7 +6,7 @@ from app.schemas.user import UserSignUp, UpdateAccount
 
 def test_invalid_username_format_signup():
     """
-    Ensure ValidationError for invalid characters in username.
+    Raise ValidationError for invalid characters in UserSignUp username.
     """
     with pytest.raises(ValidationError):
         UserSignUp(
@@ -19,7 +19,7 @@ def test_invalid_username_format_signup():
 
 def test_passwords_do_not_match_signup():
     """
-    Ensure ValidationError when passwords don't match.
+    Raise ValidationError when passwords don't match in UserSignUp.
     """
     with pytest.raises(ValidationError):
         UserSignUp(
@@ -30,17 +30,9 @@ def test_passwords_do_not_match_signup():
         )
 
 
-def test_invalid_username_format_update_account():
-    """
-    Ensure ValidationError for invalid characters in username on update.
-    """
-    with pytest.raises(ValidationError):
-        UpdateAccount(username="invalid username!")
-
-
 def test_valid_user_signup():
     """
-    Verify UserSignUp instance creation with valid data.
+    Allow UserSignUp creation with valid data.
     """
     user = UserSignUp(
         username="valid_user",
@@ -52,20 +44,26 @@ def test_valid_user_signup():
     assert user.email == "valid@example.com"
 
 
-def test_username_length_limits_signup():
+@pytest.mark.parametrize("username", ["ab", "a" * 31])
+def test_username_length_limits_signup(username):
     """
-    Ensure ValidationError for username outside length limits (3-30).
+    Raise ValidationError for username outside length limits in UserSignUp.
     """
     with pytest.raises(ValidationError):
-        UserSignUp(username="ab", email="valid@example.com", password="securepassword", confirm_password="securepassword")
-    
-    with pytest.raises(ValidationError):
-        UserSignUp(username="a" * 31, email="valid@example.com", password="securepassword", confirm_password="securepassword")
+        UserSignUp(username=username, email="valid@example.com", password="securepassword", confirm_password="securepassword")
 
 
 def test_password_length_limits_signup():
     """
-    Ensure ValidationError for password below minimum length (8).
+    Raise ValidationError for password below minimum length in UserSignUp.
     """
     with pytest.raises(ValidationError):
         UserSignUp(username="valid_user", email="valid@example.com", password="short", confirm_password="short")
+
+
+def test_invalid_username_format_update_account():
+    """
+    Raise ValidationError for invalid characters in UpdateAccount username.
+    """
+    with pytest.raises(ValidationError):
+        UpdateAccount(username="invalid username!")
