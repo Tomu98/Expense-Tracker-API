@@ -88,7 +88,7 @@ Once the application is running, you can access Swagger's interactive API docume
 
 **Authentication**:
 - **POST** `/signup` - User registration.
-- **POST** `/auth/login/` - User login.
+- **POST** `/login` - User login.
 
 **Expenses**:
 - **GET** `/expenses` - Read expenses.
