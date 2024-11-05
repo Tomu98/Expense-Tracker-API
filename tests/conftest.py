@@ -3,9 +3,10 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+from app.dependencies.database import get_db
 from app.db import Base
 from app.main import app
-from app.dependencies.database import get_db
+from tests.utils import create_user_for_test
 
 
 # In-memory SQLite configuration for tests
@@ -46,6 +47,7 @@ def db():
     connection.close()
 
 
+
 @pytest.fixture(scope="function")
 def client(db):
     """
@@ -62,3 +64,23 @@ def client(db):
 
     with TestClient(app) as test_client:
         yield test_client
+
+
+
+@pytest.fixture(scope="function")
+def auth_user_token(client):
+    """
+    Fixture to create a test user and return their authentication token.
+    """
+    # Create a user for testing
+    create_user_for_test(client, "testuser", "test@example.com", "testpassword")
+
+    # Login to get an access token
+    login_data = {"username": "testuser", "password": "testpassword"}
+    response = client.post("/login", data=login_data)
+
+    assert response.status_code == 200, f"Failed to authenticate, status code: {response.status_code}"
+    token = response.json().get("access_token")
+    assert token, "Authentication failed: 'access_token' not found in response."
+
+    return token

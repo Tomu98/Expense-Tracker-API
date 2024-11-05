@@ -3,6 +3,7 @@ from tests.utils import create_user_for_test
 
 
 
+# Test for /signup endpoint
 def test_signup_success(client):
     """
     Test successful user signup.
@@ -45,6 +46,7 @@ def test_signup_username_taken(client):
 
 
 
+# Tests for /login endpoint
 def test_login_success(client):
     """
     Test successful login of a user.
