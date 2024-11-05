@@ -23,6 +23,7 @@ class AddExpense(BaseModel):
         default=None
     )
     date: DateType = Field(
+        default_factory=DateType.today,
         title="Date",
         description="Date on which the expense was incurred in 'YYYY-MM-DD' format."
     )
