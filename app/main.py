@@ -7,7 +7,7 @@ from app.routers import health, auth, expenses, users
 
 app = FastAPI(
     title="Expense Tracker API",
-    version="1.2.9",
+    version="1.2.10",
     description="""A comprehensive API designed for managing personal expenses,
                 enabling users to register and log in securely using JWT-based authentication,
                 as well as add, update, and delete expenses with ease.
@@ -31,3 +31,10 @@ app.include_router(health.router)
 app.include_router(auth.router)
 app.include_router(expenses.router)
 app.include_router(users.router)
+
+
+# A ver:
+# Comprobar que todo esté bien con los filtros de fechas en:
+# - app/routers/expenses.py
+# - app/schemas/expense.py
+# - tests/utils.py

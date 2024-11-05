@@ -4,6 +4,7 @@ from app.schemas.expense import AddExpense, UpdateExpense
 
 
 
+# Tests for AddExpense
 def test_invalid_category_add_expense():
     """
     Raise ValidationError for non-allowed category in AddExpense.
@@ -30,6 +31,8 @@ def test_valid_category_add_expense():
     assert expense.category == "Groceries"
 
 
+
+# Tests for UpdateExpense
 def test_invalid_category_update_expense():
     """
     Ensure ValidationError for a category not in 'ALLOWED_CATEGORIES' in UpdateExpense.
