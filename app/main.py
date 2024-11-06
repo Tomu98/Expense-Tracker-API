@@ -7,7 +7,7 @@ from app.routers import health, auth, expenses, users
 
 app = FastAPI(
     title="Expense Tracker API",
-    version="1.2.12",
+    version="1.2.13",
     description="""A comprehensive API designed for managing personal expenses,
                 enabling users to register and log in securely using JWT-based authentication,
                 as well as add, update, and delete expenses with ease.

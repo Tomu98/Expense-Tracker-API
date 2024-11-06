@@ -16,8 +16,8 @@ router = APIRouter(
 async def read_expenses(
     user: user_dependency,
     db: db_dependency,
-    start_date: date = Query(None, description="Start date for filtering expenses (YYYY-MM-DD)"),
-    end_date: date = Query(None, description="End date for filtering expenses (YYYY-MM-DD)"),
+    from_date: date = Query(None, description="Filter expenses from this date (YYYY-MM-DD)"),
+    to_date: date = Query(None, description="Filter expenses up to this date (YYYY-MM-DD)"),
     period: str = Query(None, description="Predefined period: 'week', 'month', '3months'")
 ):
     """
@@ -26,20 +26,19 @@ async def read_expenses(
     **Args:**
         user (user_dependency): The current authenticated user.
         db (db_dependency): The database session.
-        start_date (date, optional): Start date to retrieve expenses from this date onward. Defaults to None.
-        end_date (date, optional): End date to retrieve expenses up to this date. Defaults to None.
-        period (_type_, optional): Predefined period to filter expenses. Accepted values are 'week', 'month', and '3months'. Defaults to None.
+        from_date (date, optional): Start date to retrieve expenses from this date onward. Defaults to None.
+        to_date (date, optional): End date to retrieve expenses up to this date. Defaults to None.
+        period (str, optional): Predefined period to filter expenses. Accepted values are 'week', 'month', and '3months'. Defaults to None.
 
     **Raises:**
-        HTTPException: If `start_date` is later than `end_date`.
-        HTTPException: If an invalid `period` is provided.
+        HTTPException: If an invalid period is provided.
 
     **Returns:**
-        dict: A dictionary containing a list of expenses ordered by date in descending order.
+        dict: A dictionary containing a list of expenses, ordered by date in descending order.
     """
-    # Date validation
-    if start_date and end_date and start_date > end_date:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="'start_date' cannot be later than 'end_date'.")
+    # Date validation (in case from_date is later than to_date)
+    if from_date and to_date and from_date > to_date:
+        from_date, to_date = to_date, from_date
 
     # Base query
     query = db.query(Expense).filter(Expense.user_id == user.id)
@@ -53,16 +52,16 @@ async def read_expenses(
         }
         period_lower = period.lower()
         if period_lower in period_map:
-            start_date = datetime.now().date() - period_map[period_lower]
-            end_date = datetime.now().date()
+            from_date = datetime.now().date() - period_map[period_lower]
+            to_date = datetime.now().date()
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid 'period' value. Accepted values are 'week', 'month', '3months'.")
 
     # Apply start_date and end_date filters, casting to Date for compatibility
-    if start_date:
-        query = query.filter(Expense.date >= start_date)
-    if end_date:
-        query = query.filter(Expense.date <= end_date)
+    if from_date:
+        query = query.filter(Expense.date >= from_date)
+    if to_date:
+        query = query.filter(Expense.date <= to_date)
 
     # Execute query and return ordered expenses
     expenses = query.order_by(Expense.date.desc()).all()
