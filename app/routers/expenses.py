@@ -3,8 +3,7 @@ from app.dependencies.auth import user_dependency
 from app.dependencies.database import db_dependency
 from app.models.expense import Expense
 from app.schemas.expense import AddExpense, UpdateExpense
-from datetime import date, timedelta
-from sqlalchemy import cast, Date
+from datetime import date, timedelta, datetime
 
 
 router = APIRouter(
@@ -45,7 +44,7 @@ async def read_expenses(
     # Base query
     query = db.query(Expense).filter(Expense.user_id == user.id)
 
-    # Apply period filter if provided
+    # Define period-based start and end dates if period is provided
     if period:
         period_map = {
             "week": timedelta(days=7),
@@ -54,16 +53,16 @@ async def read_expenses(
         }
         period_lower = period.lower()
         if period_lower in period_map:
-            start_date = date.today() - period_map[period_lower]
-            end_date = date.today()
+            start_date = datetime.now().date() - period_map[period_lower]
+            end_date = datetime.now().date()
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid 'period' value. Accepted values are 'week', 'month', '3months'.")
 
     # Apply start_date and end_date filters, casting to Date for compatibility
     if start_date:
-        query = query.filter(cast(Expense.date, Date) >= start_date)
+        query = query.filter(Expense.date >= start_date)
     if end_date:
-        query = query.filter(cast(Expense.date, Date) <= end_date)
+        query = query.filter(Expense.date <= end_date)
 
     # Execute query and return ordered expenses
     expenses = query.order_by(Expense.date.desc()).all()

@@ -7,7 +7,7 @@ from app.routers import health, auth, expenses, users
 
 app = FastAPI(
     title="Expense Tracker API",
-    version="1.2.11",
+    version="1.2.12",
     description="""A comprehensive API designed for managing personal expenses,
                 enabling users to register and log in securely using JWT-based authentication,
                 as well as add, update, and delete expenses with ease.
@@ -35,7 +35,7 @@ app.include_router(users.router)
 
 # A ver:
 # Comprobar que todo esté bien con los filtros de fechas en:
-# - app/routers/expenses.py
+# - app/routers/expenses.py Posiblemente voy a mejorar el filtro y su rango dado por el usuario
 # - app/schemas/expense.py
 # - tests/utils.py
 
@@ -47,8 +47,3 @@ app.include_router(users.router)
 # Habían tres expenses, al actualizar el segundo,
 # este en pgadmin me apareció que se movió en el tercer lugar
 # y el que estaba tercero quedó segundo, ASEGURAR si es normal o hay que arreglar
-
-# FALTA COMPROBAR:
-# - el filtro de fechas:
-# --- Ejecuto sin filtros y muestra, pero al poner filtros como "week" no me sale nada
-# --- Todo bien con "start_date" y "end_date"
