@@ -14,18 +14,18 @@ router = APIRouter(
 @router.put("/update", status_code=status.HTTP_200_OK)
 async def update_account(user_data: UpdateAccount, db: db_dependency, current_user: User = Depends(get_current_user)):
     """
-    Update the authenticated user's username.
+    ***Update the authenticated user's username.***
 
-    Args:
+    **Args:**
         user_data (UpdateAccount): Schema with the new username.
         db (db_dependency): Database session.
         current_user (User, optional): The currently authenticated user. Defaults to Depends(get_current_user).
 
-    Raises:
-        HTTPException: If the user is not found.
+    **Raises:**
+        HTTPException: If the user isn't found.
         HTTPException: If the new username is already taken.
 
-    Returns:
+    **Returns:**
         dict: A message indicating the update was successful and the updated username.
     """
     user = db.query(User).filter(User.id == current_user.id).first()
@@ -47,14 +47,14 @@ async def update_account(user_data: UpdateAccount, db: db_dependency, current_us
 @router.delete("/delete", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_account(db: db_dependency, current_user: User = Depends(get_current_user)):
     """
-    Delete the authenticated user's account.
+    ***Delete the authenticated user's account.***
 
-    Args:
+    **Args:**
         db (db_dependency): Database session.
         current_user (User, optional): The currently authenticated user. Defaults to Depends(get_current_user).
 
-    Raises:
-        HTTPException: If the user is not found.
+    **Raises:**
+        HTTPException: If the user isn't found.
     """
     user = db.query(User).filter(User.id == current_user.id).first()
     if not user:

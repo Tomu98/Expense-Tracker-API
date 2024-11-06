@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, status, Path
+from fastapi import APIRouter, HTTPException, status, Path, Query
 from app.dependencies.auth import user_dependency
 from app.dependencies.database import db_dependency
 from app.models.expense import Expense
 from app.schemas.expense import AddExpense, UpdateExpense
 from datetime import date, timedelta
+from sqlalchemy import cast, Date
 
 
 router = APIRouter(
@@ -16,31 +17,35 @@ router = APIRouter(
 async def read_expenses(
     user: user_dependency,
     db: db_dependency,
-    start_date: date = None,
-    end_date: date = None,
-    period: str = None
+    start_date: date = Query(None, description="Start date for filtering expenses (YYYY-MM-DD)"),
+    end_date: date = Query(None, description="End date for filtering expenses (YYYY-MM-DD)"),
+    period: str = Query(None, description="Predefined period: 'week', 'month', '3months'")
 ):
     """
-    Retrieve all expenses for the authenticated user with optional date filters.
+    ***Retrieve all expenses for the authenticated user with optional date filters.***
 
-    Args:
+    **Args:**
         user (user_dependency): The current authenticated user.
         db (db_dependency): The database session.
-        start_date (date, optional): Filter to retrieve expenses from this date onward. Defaults to None.
-        end_date (date, optional): Filter to retrieve expenses until this date. Defaults to None.
-        period (str, optional): Predefined period to filter expenses. Accepted values are 'week', 'month', and '3months'. Defaults to None.
+        start_date (date, optional): Start date to retrieve expenses from this date onward. Defaults to None.
+        end_date (date, optional): End date to retrieve expenses up to this date. Defaults to None.
+        period (_type_, optional): Predefined period to filter expenses. Accepted values are 'week', 'month', and '3months'. Defaults to None.
 
-    Raises:
-        HTTPException: If start_date is later than end_date.
+    **Raises:**
+        HTTPException: If `start_date` is later than `end_date`.
+        HTTPException: If an invalid `period` is provided.
 
-    Returns:
-        dict: A dictionary containing the list of expenses.
+    **Returns:**
+        dict: A dictionary containing a list of expenses ordered by date in descending order.
     """
+    # Date validation
     if start_date and end_date and start_date > end_date:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="start_date cannot be later than end_date.")
-    
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="'start_date' cannot be later than 'end_date'.")
+
+    # Base query
     query = db.query(Expense).filter(Expense.user_id == user.id)
 
+    # Apply period filter if provided
     if period:
         period_map = {
             "week": timedelta(days=7),
@@ -51,14 +56,17 @@ async def read_expenses(
         if period_lower in period_map:
             start_date = date.today() - period_map[period_lower]
             end_date = date.today()
+        else:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid 'period' value. Accepted values are 'week', 'month', '3months'.")
 
+    # Apply start_date and end_date filters, casting to Date for compatibility
     if start_date:
-        query = query.filter(Expense.date >= start_date)
-
+        query = query.filter(cast(Expense.date, Date) >= start_date)
     if end_date:
-        query = query.filter(Expense.date <= end_date)
+        query = query.filter(cast(Expense.date, Date) <= end_date)
 
-    expenses = query.order_by(Expense.id).all()
+    # Execute query and return ordered expenses
+    expenses = query.order_by(Expense.date.desc()).all()
     return {"expenses": expenses}
 
 
@@ -67,14 +75,14 @@ async def read_expenses(
 @router.post("/expenses", status_code=status.HTTP_201_CREATED)
 async def add_expense(user: user_dependency, expense: AddExpense, db: db_dependency):
     """
-    Add a new expense for the authenticated user.
+    ***Add a new expense for the authenticated user.***
 
-    Args:
+    **Args:**
         user (user_dependency): The current authenticated user.
         expense (AddExpense): The details of the expense to be added.
         db (db_dependency): The database session.
 
-    Returns:
+    **Returns:**
         dict: A dictionary with a success message and the ID of the created expense.
     """
     new_expense = Expense(
@@ -97,18 +105,18 @@ async def add_expense(user: user_dependency, expense: AddExpense, db: db_depende
 @router.put("/expenses/{id}", status_code=status.HTTP_200_OK)
 async def update_expense(user: user_dependency, expense: UpdateExpense, db: db_dependency, id: int = Path(gt=0)):
     """
-    Update an existing expense for the authenticated user.
+    ***Update an existing expense for the authenticated user.***
 
-    Args:
+    **Args:**
         user (user_dependency): The current authenticated user.
         expense (UpdateExpense): The details of the expense to be updated.
         db (db_dependency): The database session.
         id (int, optional): The ID of the expense to be updated. Defaults to Path(gt=0).
 
-    Raises:
-        HTTPException: If the expense does not exist or does not belong to the user.
+    **Raises:**
+        HTTPException: If the expense doesn't exist or doesn't belong to the user.
 
-    Returns:
+    **Returns:**
         dict: A success message indicating that the expense was updated.
     """
     check_expense = db.query(Expense).filter(Expense.id == id, Expense.user_id == user.id).first()
@@ -131,15 +139,15 @@ async def update_expense(user: user_dependency, expense: UpdateExpense, db: db_d
 @router.delete("/expenses/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_expense(user: user_dependency, id: int, db: db_dependency):
     """
-    Delete an expense for the authenticated user.
+    ***Delete an expense for the authenticated user.***
 
-    Args:
+    **Args:**
         user (user_dependency): The current authenticated user.
         id (int): The ID of the expense to be deleted.
         db (db_dependency): The database session.
 
-    Raises:
-        HTTPException: If the expense does not exist or the user does not have permission to delete it.
+    **Raises:**
+        HTTPException: If the expense doesn't exist or the user doesn't have permission to delete it.
     """
     to_delete = db.query(Expense).filter(Expense.id == id, Expense.user_id == user.id).first()
 

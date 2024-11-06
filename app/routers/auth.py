@@ -16,17 +16,17 @@ router = APIRouter(
 @router.post("/signup", summary="User Registration", status_code=status.HTTP_201_CREATED)
 async def signup(user: UserSignUp, db: db_dependency):
     """
-    Register a new user.
+    ***Register a new user.***
 
-    Args:
+    **Args:**
         user (UserSignUp): Schema containing the user's registration details (username, email, and password).
         db (db_dependency): Database session used to check existing users and register the new user.
 
-    Raises:
-        HTTPException: If the email is already registered.
-        HTTPException: If the username is already taken.
+    **Raises:**
+        HTTPException: If the `email` is already registered.
+        HTTPException: If the `username` is already taken.
 
-    Returns:
+    **Returns:**
         dict: A message confirming the registration and the user's ID.
     """
     check_email = db.query(User).filter(User.email == user.email).first()
@@ -55,16 +55,16 @@ async def signup(user: UserSignUp, db: db_dependency):
 @router.post("/login", summary="User Login", response_model=Token, status_code=status.HTTP_200_OK)
 async def login(db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends()):
     """
-    Authenticate a user and return a JWT token.
+    ***Authenticate a user and return a JWT token.***
 
-    Args:
+    **Args:**
         db (db_dependency): Database session used to verify the user's credentials.
         form_data (OAuth2PasswordRequestForm, optional): Contains the username and password submitted by the user. Defaults to Depends().
 
-    Raises:
+    **Raises:**
         HTTPException: If the provided credentials are invalid.
 
-    Returns:
+    **Returns:**
         dict: A dictionary with the access token and its type ("bearer").
     """
     user = authenticate_user(form_data.username, form_data.password, db)

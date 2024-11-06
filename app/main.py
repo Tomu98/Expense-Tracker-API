@@ -7,7 +7,7 @@ from app.routers import health, auth, expenses, users
 
 app = FastAPI(
     title="Expense Tracker API",
-    version="1.2.10",
+    version="1.2.11",
     description="""A comprehensive API designed for managing personal expenses,
                 enabling users to register and log in securely using JWT-based authentication,
                 as well as add, update, and delete expenses with ease.
@@ -38,3 +38,17 @@ app.include_router(users.router)
 # - app/routers/expenses.py
 # - app/schemas/expense.py
 # - tests/utils.py
+
+# Al probar desde swagger creando un nuevo usuario y un nuevo gasto me aparece:
+# - id: 21 del gasto
+# - user_id: 6 del usuario
+# Comprobar si eso se puede arreglar para que no se acumulen ids de usuarios que ya no existen
+
+# Habían tres expenses, al actualizar el segundo,
+# este en pgadmin me apareció que se movió en el tercer lugar
+# y el que estaba tercero quedó segundo, ASEGURAR si es normal o hay que arreglar
+
+# FALTA COMPROBAR:
+# - el filtro de fechas:
+# --- Ejecuto sin filtros y muestra, pero al poner filtros como "week" no me sale nada
+# --- Todo bien con "start_date" y "end_date"
