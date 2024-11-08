@@ -14,11 +14,12 @@ Specific inspiration for this project comes from the following link: [Expense Tr
 
 ## Features
 
-- **Account management**: Users can register, login, update their username or delete their account.
-- **Authentication with JWT**: The API is protected by JSON Web Tokens (JWT), only authenticated users can access their data and perform operations on the API.
-- **Expense administration**: Users can create, read, update and delete their expenses. Expenses can be filtered by dates and categories.
-- **Secure and Scalable Database**: The database used is PostgreSQL. Sensitive settings, such as the database connection URL, are managed through an `.env` file, so users can easily switch databases if they prefer, by adjusting only the `DATABASE_URL` variable.
-- **Database Migrations**: Database schema is kept up to date through migrations managed with Alembic.
+- **Account management:** Users can register, login, update their username or delete their account.
+- **Authentication with JWT:** The API is protected by JSON Web Tokens (JWT), only authenticated users can access their data and perform operations on the API.
+- **Expense administration:** Users can create, read, update and delete their expenses. Expenses can be filtered by dates and categories.
+- **Secure and Scalable Database:** The database I used is PostgreSQL. Sensitive settings, such as the database connection URL, are managed through an `.env` file, so users can easily switch databases if they prefer, by adjusting only the `DATABASE_URL` variable.
+- **Database Migrations:** Database schema is kept up to date through migrations managed with Alembic.
+- **Automated testing:** This project uses pytest to perform unit tests and check that everything works correctly.
 
 <br>
 
@@ -40,8 +41,8 @@ Specific inspiration for this project comes from the following link: [Expense Tr
 
    ```bash
    python -m venv .venv          # Create a virtual environment
-   source .expvenv/bin/activate  # Activate the environment in Linux/MacOS
    .venv\Scripts\activate        # Activate the environment in Windows
+   source .expvenv/bin/activate  # Activate the environment in Linux/MacOS
    ```
 
 4. Install the necessary dependencies for the project using the `requirements.txt` file:
@@ -79,6 +80,16 @@ Adjust the `.env` file if you need to change the database or authentication sett
 
 <br>
 
+## Running Tests
+
+This project uses pytest to perform automated tests to ensure the reliability and functionality of key features.
+To run the tests, use the following command:
+```bash
+pytest
+```
+
+<br>
+
 ## How to use it
 
 Once the application is running, you can access Swagger's interactive API documentation at 
@@ -86,19 +97,19 @@ Once the application is running, you can access Swagger's interactive API docume
 
 ### Main Endpoints
 
-**Authentication**:
+**Authentication:**
 - **POST** `/signup` - User registration.
 - **POST** `/login` - User login.
 
-**Expenses**:
-- **GET** `/expenses` - Read expenses.
-- **POST** `/expenses` - Add expense.
-- **PUT** `/expenses/{id}` - Update expense.
-- **DELETE** `/expenses/{id}` - Delete expense.
+**Expenses:**
+- **GET** `/expenses` - Retrieve a list of expenses.
+- **POST** `/expenses` - Create a new expense.
+- **PUT** `/expenses/{id}` - Update an expense by ID.
+- **DELETE** `/expenses/{id}` - Delete an expense by ID.
 
-**User Account**:
-- **PUT** `/update` - Update the username.
-- **DELETE** `/delete` - Delete user account.
+**User Account:**
+- **PUT** `/user` - Update the username.
+- **DELETE** `/user` - Delete the user account.
 
 <br>
 
