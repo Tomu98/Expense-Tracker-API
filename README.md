@@ -1,5 +1,6 @@
 # Expense Tracker API
 
+
 Expense Tracker API is a backend application designed to help users manage their personal expenses.
 Users can register, log in, update their username or delete their account, and perform CRUD operations on their expenses.
 The API also features a filtering system to search for expenses by dates and categories.
@@ -9,6 +10,10 @@ This project is inspired by an idea from [roadmap.sh](https://roadmap.sh), a pla
 
 
 Specific inspiration for this project comes from the following link: [Expense Tracker API in roadmap.sh](https://roadmap.sh/projects/expense-tracker-api)
+
+
+<img alt="Static Badge" src="https://img.shields.io/badge/Version-1.2.15-seagreen?style=for-the-badge">
+
 
 <br>
 
